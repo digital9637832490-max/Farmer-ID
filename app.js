@@ -15,7 +15,7 @@ function updatePreview(){
  setText("pFather",val("father"));setText("pDob",formatDate($("dob").value));
  const genderMap={Female:"महिला",Male:"पुरुष",Other:"अन्य"};
  setText("pGender",genderMap[$("gender").value]||val("gender"));setText("pMobile",val("mobile"));setText("pId",val("farmerId"));
- const a=$("aadhaar").value.replace(/\\D/g,"");
+ const a=$("aadhaar").value.replace(/\D/g,"");
  setText("pAadhaar",a.length===12?"XXXX-XXXX-"+a.slice(-4):"—");
  setText("pState",val("state"));setText("pDistrict",val("district"));setText("pSubdistrict",val("subdistrict"));setText("pVillage",val("village"));setText("pSurvey",val("survey"));setText("pArea",val("area"));
  const q=$("qrCode");q.innerHTML="";
@@ -41,7 +41,7 @@ async function downloadPdf(){
  const status=$("status");
  if(!window.jspdf || !window.jspdf.jsPDF){status.textContent="PDF लाइब्रेरी लोड नहीं हुई। इंटरनेट चालू करके पेज रीफ्रेश करें।";return}
  if(val("name")==="—"||val("farmerId")==="—"){status.textContent="PDF से पहले किसान का नाम और Farmer ID भरें।";return}
- const aadhaarDigits=$("aadhaar").value.replace(/\\D/g,"");
+ const aadhaarDigits=$("aadhaar").value.replace(/\D/g,"");
  if(aadhaarDigits && !/^\\d{12}$/.test(aadhaarDigits)){status.textContent="आधार नंबर वैकल्पिक है, लेकिन भरने पर 12 अंक होने चाहिए।";return}
  status.textContent="PDF तैयार हो रहा है…";
  try{
