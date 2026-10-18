@@ -27,3 +27,10 @@
 .land-help{grid-column:1/-1;font-size:.9rem;color:#387052;background:#edf6ef;padding:9px 12px;border-radius:8px}.extra-land-rows{grid-column:1/-1;display:grid;gap:10px}.extra-land-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;padding:12px;border:1px solid #d7e7dc;border-radius:10px;background:#fbfdfb}.extra-land-row label{display:grid;gap:5px;font-size:.9rem}.extra-land-row input{width:100%;min-width:0}.add-land-button{justify-self:start}.remove-land{padding:9px 12px}@media(max-width:600px){.extra-land-row{grid-template-columns:1fr 1fr}.extra-land-row .remove-land{grid-column:1/-1;justify-self:start}}
 
 .profile-main{position:relative}
+
+/* Farmer and oxen artwork + prominent ID on both cards */
+.qr-box small{display:none!important}
+.back-id{display:flex;align-items:center;justify-content:center;gap:10px;margin:6px 10px 8px;padding:5px;border:1px solid #d5e7d8;border-radius:8px;background:#f2f8e9;color:#145b31}
+.back-id span{font-size:11px;font-weight:800;letter-spacing:.5px}
+.back-id strong{font-size:20px;font-weight:900;letter-spacing:.5px}
+.farmer-oxen-art{display:block;width:38%;max-height:82px;object-fit:contain;margin:0 8px 4px auto;border-radius:8px}
