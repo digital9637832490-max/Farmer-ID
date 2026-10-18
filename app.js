@@ -1,5 +1,6 @@
 const $ = id => document.getElementById(id);
 const ids = ["name","father","dob","gender","mobile","aadhaar","farmerId","state","district","subdistrict","village","survey","area"];
+const STORAGE_KEY = "agriCardStudio_savedDetails_v1";
 let photoData = "";
 const translations = {
  hi:{formTitle:"किसान की जानकारी",name:"किसान का पूरा नाम",father:"पिता / पति का नाम",dob:"जन्मतिथि",gender:"लिंग",mobile:"मोबाइल नंबर (वैकल्पिक)",aadhaar:"आधार नंबर (वैकल्पिक)",farmerId:"Farmer ID (आधिकारिक रिकॉर्ड से)",state:"राज्य",district:"जिला",subdistrict:"तहसील / उप-जिला",village:"गाँव",survey:"सर्वे / खसरा नंबर (वैकल्पिक)",area:"क्षेत्रफल (वैकल्पिक)",photo:"फोटो (वैकल्पिक)"},
@@ -23,7 +24,16 @@ function updatePreview(){
  if(window.QRCode && val("farmerId")!=="—") new QRCode(q,{text:qrText,width:100,height:100,colorDark:"#172a24",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
  else q.textContent="ID भरें";
 }
-ids.forEach(id=>$(id).addEventListener("input",updatePreview));
+function saveDetails(){
+ // Save regular profile fields on this device only. Aadhaar is deliberately not persisted.
+ const data={}; ids.filter(id=>id!=="aadhaar").forEach(id=>{data[id]=$(id).value});
+ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));return true}catch(e){return false}
+}
+function restoreDetails(){
+ try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return;const data=JSON.parse(raw);ids.filter(id=>id!=="aadhaar").forEach(id=>{if(typeof data[id]==="string")$(id).value=data[id]});}catch(e){}
+}
+restoreDetails();
+ids.forEach(id=>$(id).addEventListener("input",()=>{updatePreview();saveDetails()}));
 $("gender").addEventListener("change",updatePreview);
 $("photo").addEventListener("change",e=>{
  const file=e.target.files && e.target.files[0]; if(!file){photoData="";$("photoPreview").textContent="किसान\nफोटो";return}
@@ -31,19 +41,25 @@ $("photo").addEventListener("change",e=>{
  const reader=new FileReader();reader.onload=()=>{photoData=reader.result;$("photoPreview").innerHTML="";const img=document.createElement("img");img.src=photoData;img.alt="Farmer photo";$("photoPreview").appendChild(img)};reader.readAsDataURL(file);
 });
 $("cardForm").addEventListener("submit",e=>{e.preventDefault();updatePreview();$("status").textContent="Preview अपडेट हो गया। जानकारी सही होने की पुष्टि करें।"});
-$("cardForm").addEventListener("reset",()=>setTimeout(()=>{photoData="";$("photoPreview").textContent="किसान\nफोटो";$("status").textContent="";updatePreview()},0));
+$("cardForm").addEventListener("reset",()=>setTimeout(()=>{photoData="";$("photoPreview").textContent="किसान\nफोटो";$("status").textContent="";localStorage.removeItem(STORAGE_KEY);updatePreview()},0));
 $("language").addEventListener("change",()=>{
  const t=translations[$("language").value];Object.keys(t).forEach(k=>{if(k==="formTitle")setText(k,t[k]);else{const el=document.querySelector(`[data-i18n="${k}"]`);if(el)el.textContent=t[k]}})
 });
 function loadImage(src){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src})}
 function roundedRect(doc,x,y,w,h,r,style){doc.roundedRect(x,y,w,h,r,r,style)}
+function loadScript(src){return new Promise((resolve,reject)=>{const s=document.createElement("script");s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error("script load failed"));document.head.appendChild(s)})}
+async function ensureJsPDF(){
+ if(window.jspdf && window.jspdf.jsPDF)return true;
+ for(const src of ["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js","https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"]){try{await loadScript(src);if(window.jspdf&&window.jspdf.jsPDF)return true}catch(e){}}
+ return false;
+}
 async function downloadPdf(){
  const status=$("status");
- if(!window.jspdf || !window.jspdf.jsPDF){status.textContent="PDF लाइब्रेरी लोड नहीं हुई। इंटरनेट चालू करके पेज रीफ्रेश करें।";return}
+ if(!await ensureJsPDF()){status.textContent="PDF लाइब्रेरी लोड नहीं हुई। इंटरनेट कनेक्शन जाँचकर दोबारा प्रयास करें।";return}
  if(val("name")==="—"||val("farmerId")==="—"){status.textContent="PDF से पहले किसान का नाम और Farmer ID भरें।";return}
  const aadhaarDigits=$("aadhaar").value.replace(/\D/g,"");
- if(aadhaarDigits && !/^\\d{12}$/.test(aadhaarDigits)){status.textContent="आधार नंबर वैकल्पिक है, लेकिन भरने पर 12 अंक होने चाहिए।";return}
- status.textContent="PDF तैयार हो रहा है…";
+ if(aadhaarDigits && !/^\d{12}$/.test(aadhaarDigits)){status.textContent="आधार नंबर वैकल्पिक है, लेकिन भरने पर 12 अंक होने चाहिए।";return}
+ saveDetails();status.textContent="जानकारी इस डिवाइस पर सेव हो गई है। PDF तैयार हो रहा है…";
  try{
   const {jsPDF}=window.jspdf;const doc=new jsPDF({orientation:"landscape",unit:"mm",format:"a4",compress:true});
   const pageW=297,pageH=210,margin=8,gap=5,cardW=(pageW-margin*2-gap)/2,cardH=85,y=(pageH-cardH)/2;
@@ -72,8 +88,9 @@ async function downloadPdf(){
   }
   await drawCard(margin,y,cardW,cardH,false);await drawCard(margin+cardW+gap,y,cardW,cardH,true);
   doc.setFont("helvetica","normal");doc.setFontSize(6);doc.setTextColor(110,120,114);doc.text("Generated from user-provided data. This PDF is not an official Farmer ID or proof of government verification.",pageW/2,pageH-6,{align:"center"});
-  doc.save("farmer-profile-card.pdf");status.textContent="PDF डाउनलोड हो गया। यह व्यक्तिगत रिकॉर्ड है, सरकारी पहचान-पत्र नहीं।";
+  doc.save("farmer-details-card.pdf");status.textContent="जानकारी सेव हो गई और PDF डाउनलोड शुरू हो गया। यह व्यक्तिगत रिकॉर्ड है, सरकारी पहचान-पत्र नहीं।";
  }catch(err){status.textContent="PDF नहीं बन पाया। कृपया दोबारा प्रयास करें।"}
 }
 $("downloadPdf").addEventListener("click",downloadPdf);
+$("downloadPdf").textContent="जानकारी सेव करें और PDF डाउनलोड करें";
 updatePreview();

@@ -6,8 +6,8 @@
   <meta name="description" content="Farmer Card PDF maker for farmer-provided or officially obtained information.">
   <title>Agri Card Studio | Farmer Card PDF</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" onerror="this.onerror=null;this.src=\'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js\'"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" onerror="this.onerror=null;this.src=\'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js\'"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 <header class="topbar">
@@ -39,8 +39,8 @@
         <label><span data-i18n="area">क्षेत्रफल (वैकल्पिक)</span><input id="area" placeholder="जैसे 0.50 ha"></label>
       </div>
       <label class="upload-label"><span data-i18n="photo">फोटो (वैकल्पिक)</span><input id="photo" type="file" accept="image/png,image/jpeg,image/webp"></label>
-      <div class="actions"><button type="submit" class="primary">Preview अपडेट करें</button><button type="button" id="downloadPdf" class="download">PDF डाउनलोड करें</button><button type="reset" class="secondary">फॉर्म साफ़ करें</button></div>
-      <p class="hint">PDF बनाने के लिए इंटरनेट कनेक्शन आवश्यक है (PDF और QR लाइब्रेरी CDN से लोड होती हैं)। आधार नंबर केवल इस डिवाइस पर प्रोसेस होता है; QR में शामिल नहीं किया जाता और सर्वर पर अपलोड नहीं होता।</p>
+      <div class="actions"><button type="submit" class="primary">Preview अपडेट करें</button><button type="button" id="downloadPdf" class="download">जानकारी सेव करें और PDF डाउनलोड करें</button><button type="reset" class="secondary">फॉर्म साफ़ करें</button></div>
+      <p class="hint">PDF बनाने के लिए इंटरनेट कनेक्शन आवश्यक है (PDF और QR लाइब्रेरी CDN से लोड होती हैं)। जानकारी इसी ब्राउज़र में सेव होती है; आधार नंबर सुरक्षा के लिए सेव नहीं किया जाता। आधार QR में शामिल नहीं होगा और सर्वर पर अपलोड नहीं होता।</p>
       <p id="status" role="status" aria-live="polite"></p>
     </form>
   </section>
