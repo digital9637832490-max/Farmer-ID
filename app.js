@@ -28,7 +28,7 @@ $("photo").addEventListener("change",e=>{
  if(file.size>5*1024*1024){$("status").textContent="फोटो 5 MB से छोटी चुनें।";e.target.value="";return}
  const reader=new FileReader();reader.onload=()=>{photoData=reader.result;$("photoPreview").innerHTML="";const img=document.createElement("img");img.src=photoData;img.alt="Farmer photo";$("photoPreview").appendChild(img)};reader.readAsDataURL(file);
 });
-$("cardForm").addEventListener("submit",e=>{e.preventDefault();updatePreview();$("status").textContent="Preview अपडेट हो गया। जानकारी सही होने की पुष्टि करें।"});
+$("cardForm").addEventListener("submit",async e=>{e.preventDefault();updatePreview();await downloadPdf()});
 $("cardForm").addEventListener("reset",()=>setTimeout(()=>{photoData="";$("photoPreview").textContent="किसान\nफोटो";$("status").textContent="";updatePreview()},0));
 $("language").addEventListener("change",()=>{
  const t=translations[$("language").value];Object.keys(t).forEach(k=>{if(k==="formTitle")setText(k,t[k]);else{const el=document.querySelector(`[data-i18n="${k}"]`);if(el)el.textContent=t[k]}})
