@@ -3,7 +3,7 @@ const ids = ["name","father","dob","gender","mobile","aadhaar","farmerId","state
 const STORAGE_KEY = "agriCardStudio_savedDetails_v1";
 let photoData = "";
 const translations = {
- hi:{formTitle:"किसान की जानकारी",name:"किसान का पूरा नाम",father:"पिता / पति का नाम",dob:"जन्मतिथि",gender:"लिंग",mobile:"मोबाइल नंबर (वैकल्पिक)",aadhaar:"आधार नंबर (वैकल्पिक)",farmerId:"Farmer ID (आधिकारिक रिकॉर्ड से)",state:"राज्य",district:"जिला",subdistrict:"तहसील / उप-जिला",village:"गाँव",survey:"सर्वे / खसरा नंबर (वैकल्पिक)",area:"क्षेत्रफल (वैकल्पिक)",photo:"फोटो (वैकल्पिक)"},
+ hi:{formTitle:"किसान की जानकारी",name:"किसान का पूरा नाम",father:"पिता / पति का नाम",dob:"जन्मतिथि",gender:"लिंग",mobile:"मोबाइल नंबर (वैकल्पिक)",aadhaar:"आधार नंबर (वैकल्पिक)",farmerId:" (आधिकारिक रिकॉर्ड से)",state:"राज्य",district:"जिला",subdistrict:"तहसील / उप-जिला",village:"गाँव",survey:"सर्वे / खसरा नंबर (वैकल्पिक)",area:"क्षेत्रफल (वैकल्पिक)",photo:"फोटो (वैकल्पिक)"},
  mr:{formTitle:"शेतकऱ्याची माहिती",name:"शेतकऱ्याचे पूर्ण नाव",father:"वडील / पतीचे नाव",dob:"जन्मतारीख",gender:"लिंग",mobile:"मोबाइल नंबर (पर्यायी)",aadhaar:"आधार क्रमांक (पर्यायी)",farmerId:"Farmer ID (अधिकृत नोंदीनुसार)",state:"राज्य",district:"जिल्हा",subdistrict:"तालुका / उपजिल्हा",village:"गाव",survey:"सर्वे / गट क्रमांक (पर्यायी)",area:"क्षेत्रफळ (पर्यायी)",photo:"फोटो (पर्यायी)"},
  en:{formTitle:"Farmer details",name:"Farmer full name",father:"Father / spouse name",dob:"Date of birth",gender:"Gender",mobile:"Mobile number (optional)",aadhaar:"Aadhaar number (optional)",farmerId:"Farmer ID (from official record)",state:"State",district:"District",subdistrict:"Sub-district / Taluka",village:"Village",survey:"Survey / plot number (optional)",area:"Land area (optional)",photo:"Photo (optional)"}
 };
