@@ -1,6 +1,6 @@
 # Agri Card Studio — GitHub Pages ready
 
-A static browser-based demo for previewing a personal farmer information card and exporting two layouts on one landscape A4 PDF.
+A static browser-based tool for creating a farmer information card and exporting two layouts on one landscape A4 PDF.
 
 ## Important use limitation
 This project does **not** issue, verify, or reproduce an official government Farmer ID. The QR code contains only the name and ID typed into the form and is not an official verification QR. Use accurate information only with the farmer's permission. Do not present the generated PDF as a government-issued document.
@@ -23,7 +23,7 @@ This project does **not** issue, verify, or reproduce an official government Far
 2. Enter the farmer's accurate details from an authorized/official record.
 3. Add a photo if appropriate.
 4. Review both cards and click **A4 PDF डाउनलोड करें**.
-5. The browser downloads `farmer-card-demo.pdf`.
+5. The browser downloads `farmer-profile-card.pdf`.
 
 ## Technical notes
 - Static HTML/CSS/JavaScript; no database or server-side storage.
