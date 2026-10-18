@@ -43,7 +43,7 @@ async function downloadPdf(){
  try{
   const {jsPDF}=window.jspdf;const doc=new jsPDF({orientation:"landscape",unit:"mm",format:"a4",compress:true});
   const pageW=297,pageH=210,margin=8,gap=5,cardW=(pageW-margin*2-gap)/2,cardH=85,y=(pageH-cardH)/2;
-  function drawCard(x,y,w,h,back){
+  async function drawCard(x,y,w,h,back){
    doc.setFillColor(255,255,255);doc.setDrawColor(143,185,160);doc.setLineWidth(.5);roundedRect(doc,x,y,w,h,4,"FD");
    doc.setFont("helvetica","bold");doc.setFontSize(13);doc.setTextColor(8,123,75);doc.text("Agri",x+5,y+10);doc.setTextColor(220,180,45);doc.text("Card",x+16,y+10);
    doc.setFontSize(12);doc.setTextColor(185,156,49);doc.text("MERA KISAN CARD",x+w-5,y+10,{align:"right"});
