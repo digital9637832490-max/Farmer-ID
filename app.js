@@ -101,14 +101,13 @@ async function downloadPdf(){
     // QR code explicitly contains user-entered text, not a government verification token.
     const qrCanvas=$("qrCode").querySelector("canvas");if(qrCanvas){doc.addImage(qrCanvas.toDataURL("image/png"),"PNG",x+w-27,y+21,21,21)}
     doc.setFontSize(6);doc.setTextColor(90,105,96);doc.text("DATA QR - NOT OFFICIAL VERIFICATION",x+w-5,y+45,{align:"right"});
-    doc.setFont("helvetica","bold");doc.setFontSize(7);doc.setTextColor(8,123,75);doc.text("FARMER ID",x+w-5,y+54,{align:"right"});
-    doc.setFontSize(14);doc.setTextColor(25,45,35);const idLines=doc.splitTextToSize(val("farmerId"),w-68);doc.text(idLines.slice(0,2),x+w-5,y+61,{align:"right"});
+    doc.setFont("helvetica","bold");doc.setFontSize(7);doc.setTextColor(8,123,75);doc.text("FARMER ID",x+w/2,y+54,{align:"center"});
+    doc.setFontSize(14);doc.setTextColor(25,45,35);const idLines=doc.splitTextToSize(val("farmerId"),w-20);doc.text(idLines.slice(0,2),x+w/2,y+62,{align:"center"});
    }else{
     const cols=[["State",val("state")],["District",val("district")],["Sub-district",val("subdistrict")],["Village",val("village")],["Survey No.",""],["Area","" ]];
     const cw=(w-10)/cols.length,tx=x+5,ty=y+24;
     cols.forEach((c,i)=>{doc.setFillColor(237,246,239);doc.rect(tx+i*cw,ty,cw,8,"F");doc.setDrawColor(220,232,224);doc.rect(tx+i*cw,ty,cw,8);doc.setFont("helvetica","bold");doc.setFontSize(5.5);doc.setTextColor(87,112,98);doc.text(c[0],tx+i*cw+1,ty+5);if(i<4){doc.setFont("helvetica","normal");doc.setFontSize(6);doc.setTextColor(35,58,45);doc.text(doc.splitTextToSize(c[1],cw-2).slice(0,2),tx+i*cw+1,ty+13)}});
     const lands=getLandRows().slice(0,4);let ry=ty+8;lands.forEach((land,i)=>{doc.setDrawColor(220,232,224);doc.rect(tx+4*cw,ry,cw,8);doc.rect(tx+5*cw,ry,cw,8);doc.setFont("helvetica","normal");doc.setFontSize(6.5);doc.setTextColor(35,58,45);doc.text(doc.splitTextToSize(land.survey,cw-2).slice(0,1),tx+4*cw+1,ry+5);doc.text(doc.splitTextToSize(land.area,cw-2).slice(0,1),tx+5*cw+1,ry+5);ry+=8;});
-    doc.setFontSize(7);doc.setTextColor(100,118,107);doc.text("Land details are user-entered personal records.",x+5,y+62);
    }
    doc.setFillColor(11,141,86);doc.rect(x+0.5,y+h-8,w-1,7.5,"F");doc.setFont("helvetica","normal");doc.setFontSize(6);doc.setTextColor(255,255,255);doc.text("PERSONAL RECORD ONLY - NOT A GOVERNMENT-ISSUED CARD",x+4,y+h-3.2);doc.setFont("helvetica","bold");doc.text("Agri Card Studio",x+w-4,y+h-3.2,{align:"right"});
   }
