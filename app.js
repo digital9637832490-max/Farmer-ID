@@ -39,7 +39,7 @@ function updatePreview(){
  const genderMap={Female:"महिला",Male:"पुरुष",Other:"अन्य"};
  setText("pGender",genderMap[$("gender").value]||val("gender"));setText("pMobile",val("mobile"));setText("pId",val("farmerId"));
  const a=$("aadhaar").value.replace(/\D/g,"");
- setText("pAadhaar",a.length===12?"XXXX-XXXX-"+a.slice(-4):"—");
+ setText("pAadhaar",a.length===12?a:"—");
  setText("pState",val("state"));setText("pDistrict",val("district"));setText("pSubdistrict",val("subdistrict"));setText("pVillage",val("village"));setText("pSurvey",val("survey"));setText("pArea",val("area"));updateLandTable();
  const q=$("qrCode");q.innerHTML="";
  const qrText="PERSONAL RECORD | Farmer ID: "+val("farmerId")+" | Name: "+val("name");
@@ -96,13 +96,13 @@ async function downloadPdf(){
     if(photoData){try{const img=await loadImage(photoData);const fmt=photoData.includes("image/png")?"PNG":"JPEG";doc.addImage(img,fmt,px+0.5,py+0.5,pw-1,ph-1)}catch(e){}}
     doc.setTextColor(34,55,44);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text(doc.splitTextToSize(val("name"),w-68),x+33,y+22);
     doc.setFont("helvetica","normal");doc.setFontSize(8);
-    const lines=[["Father / Spouse",val("father")],["DOB",formatDate($("dob").value)],["Gender",$("gender").value],["Mobile",val("mobile")],["Aadhaar",aadhaarDigits.length===12?"XXXX-XXXX-"+aadhaarDigits.slice(-4):"—"]];
-    let ly=y+31;for(const [k,v] of lines){doc.setTextColor(93,116,103);doc.text(k+":",x+33,ly);doc.setTextColor(35,58,45);doc.text(doc.splitTextToSize(v,w-75),x+56,ly);ly+=8}
+    const lines=[["Father / Spouse",val("father")],["DOB",formatDate($("dob").value)],["Gender",$("gender").value],["Mobile",val("mobile")],["Aadhaar",aadhaarDigits.length===12?aadhaarDigits:"—"]];
+    let ly=y+29;for(const [k,v] of lines){doc.setTextColor(93,116,103);doc.text(k+":",x+33,ly);doc.setTextColor(35,58,45);doc.text(doc.splitTextToSize(v,w-75),x+56,ly);ly+=5.2}
     // QR code explicitly contains user-entered text, not a government verification token.
     const qrCanvas=$("qrCode").querySelector("canvas");if(qrCanvas){doc.addImage(qrCanvas.toDataURL("image/png"),"PNG",x+w-27,y+21,21,21)}
     doc.setFontSize(6);doc.setTextColor(90,105,96);doc.text("DATA QR - NOT OFFICIAL VERIFICATION",x+w-5,y+45,{align:"right"});
-    doc.setFont("helvetica","bold");doc.setFontSize(7);doc.setTextColor(8,123,75);doc.text("FARMER ID",x+w/2,y+54,{align:"center"});
-    doc.setFontSize(14);doc.setTextColor(25,45,35);const idLines=doc.splitTextToSize(val("farmerId"),w-20);doc.text(idLines.slice(0,2),x+w/2,y+62,{align:"center"});
+    doc.setFont("helvetica","bold");doc.setFontSize(7);doc.setTextColor(8,123,75);doc.text("FARMER ID",x+w/2,y+58,{align:"center"});
+    doc.setFontSize(14);doc.setTextColor(25,45,35);const idLines=doc.splitTextToSize(val("farmerId"),w-20);doc.text(idLines.slice(0,2),x+w/2,y+66,{align:"center"});
    }else{
     const cols=[["State",val("state")],["District",val("district")],["Sub-district",val("subdistrict")],["Village",val("village")],["Survey No.",""],["Area","" ]];
     const cw=(w-10)/cols.length,tx=x+5,ty=y+24;

@@ -29,7 +29,7 @@
         <label><span data-i18n="dob">जन्मतिथि</span><input id="dob" type="date"></label>
         <label><span data-i18n="gender">लिंग</span><select id="gender"><option value="Female">महिला</option><option value="Male">पुरुष</option><option value="Other">अन्य</option></select></label>
         <label><span data-i18n="mobile">मोबाइल नंबर (वैकल्पिक)</span><input id="mobile" inputmode="numeric" maxlength="10" placeholder="10 अंकों का नंबर"></label>
-        <label><span data-i18n="aadhaar">आधार नंबर (वैकल्पिक)</span><input id="aadhaar" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="12 अंकों का आधार नंबर" aria-describedby="aadhaarHint"><small id="aadhaarHint" class="field-hint">कार्ड पर केवल आखिरी 4 अंक दिखेंगे।</small></label>
+        <label><span data-i18n="aadhaar">आधार नंबर (वैकल्पिक)</span><input id="aadhaar" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="12 अंकों का आधार नंबर" aria-describedby="aadhaarHint"><small id="aadhaarHint" class="field-hint">PDF और कार्ड पर पूरे 12 अंक दिखेंगे।</small></label>
         <label><span data-i18n="farmerId">Farmer ID (आधिकारिक रिकॉर्ड से)</span><input id="farmerId" required maxlength="30" placeholder="असली Farmer ID"></label>
         <label><span data-i18n="state">राज्य</span><input id="state" value="Maharashtra"></label>
         <label><span data-i18n="district">जिला</span><input id="district" placeholder="जिला"></label>
@@ -43,7 +43,7 @@
       </div>
       <label class="upload-label"><span data-i18n="photo">फोटो (वैकल्पिक)</span><input id="photo" type="file" accept="image/png,image/jpeg,image/webp"></label>
       <div class="actions"><button type="submit" class="primary">Preview अपडेट करें</button><button type="button" id="downloadPdf" class="download">जानकारी सेव करें और PDF डाउनलोड करें</button><button type="reset" class="secondary">फॉर्म साफ़ करें</button></div>
-      <p class="hint">PDF बनाने के लिए इंटरनेट कनेक्शन आवश्यक है (PDF और QR लाइब्रेरी CDN से लोड होती हैं)। जानकारी इसी ब्राउज़र में सेव होती है; आधार नंबर सुरक्षा के लिए सेव नहीं किया जाता। आधार QR में शामिल नहीं होगा और सर्वर पर अपलोड नहीं होता।</p>
+      <p class="hint">PDF बनाने के लिए इंटरनेट कनेक्शन आवश्यक है (PDF और QR लाइब्रेरी CDN से लोड होती हैं)। जानकारी इसी ब्राउज़र में सेव होती है; आधार नंबर इस ब्राउज़र में सेव नहीं किया जाता। आधार QR में शामिल नहीं होगा और सर्वर पर अपलोड नहीं होता।</p>
       <p id="status" role="status" aria-live="polite"></p>
     </form>
   </section>
