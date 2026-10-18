@@ -10,6 +10,28 @@ const translations = {
 function val(id){return $(id).value.trim() || "—"}
 function setText(id,text){$(id).textContent=text}
 function formatDate(s){if(!s)return "—";const d=new Date(s+"T00:00:00");return d.toLocaleDateString("en-GB")}
+function getLandRows(){
+ const rows=[{survey:val("survey"),area:val("area")}];
+ document.querySelectorAll(".extra-land-row").forEach(row=>rows.push({survey:row.querySelector(".extra-survey").value.trim()||"—",area:row.querySelector(".extra-area").value.trim()||"—"}));
+ return rows.filter((r,i)=>i===0 || (r.survey!=="—"||r.area!=="—"));
+}
+function renderExtraLandRows(saved=[]){
+ const wrap=$("extraLandRows");wrap.innerHTML="";
+ saved.forEach((r,i)=>{
+  const row=document.createElement("div");row.className="extra-land-row";
+  row.innerHTML=`<label>सर्वे / गट नंबर ${i+2}<input class="extra-survey" placeholder="सर्वे / गट नंबर" maxlength="40"></label><label>क्षेत्रफल ${i+2}<input class="extra-area" placeholder="जैसे 0.50 ha" maxlength="30"></label><button type="button" class="remove-land secondary" aria-label="खेत हटाएँ">हटाएँ</button>`;
+  row.querySelector(".extra-survey").value=r.survey||"";row.querySelector(".extra-area").value=r.area||"";
+  row.querySelectorAll("input").forEach(el=>el.addEventListener("input",()=>{updatePreview();saveDetails()}));
+  row.querySelector(".remove-land").addEventListener("click",()=>{row.remove();updatePreview();saveDetails()});wrap.appendChild(row);
+ });
+}
+function updateLandTable(){
+ const body=$("landTableBody");if(!body)return;body.innerHTML="";
+ getLandRows().forEach((land,i)=>{
+  const tr=document.createElement("tr");
+  [i===0?val("state"):"↳",i===0?val("district"):"↳",i===0?val("subdistrict"):"↳",i===0?val("village"):"↳",land.survey,land.area].forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td)});body.appendChild(tr);
+ });
+}
 function updatePreview(){
  setText("pName",val("name")==="—"?"किसान का नाम":val("name"));
  setText("pNameHindi",val("name")==="—"?"किसान का नाम":val("name"));
@@ -18,7 +40,7 @@ function updatePreview(){
  setText("pGender",genderMap[$("gender").value]||val("gender"));setText("pMobile",val("mobile"));setText("pId",val("farmerId"));
  const a=$("aadhaar").value.replace(/\D/g,"");
  setText("pAadhaar",a.length===12?"XXXX-XXXX-"+a.slice(-4):"—");
- setText("pState",val("state"));setText("pDistrict",val("district"));setText("pSubdistrict",val("subdistrict"));setText("pVillage",val("village"));setText("pSurvey",val("survey"));setText("pArea",val("area"));
+ setText("pState",val("state"));setText("pDistrict",val("district"));setText("pSubdistrict",val("subdistrict"));setText("pVillage",val("village"));setText("pSurvey",val("survey"));setText("pArea",val("area"));updateLandTable();
  const q=$("qrCode");q.innerHTML="";
  const qrText="PERSONAL RECORD | Farmer ID: "+val("farmerId")+" | Name: "+val("name");
  if(window.QRCode && val("farmerId")!=="—") new QRCode(q,{text:qrText,width:100,height:100,colorDark:"#172a24",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
@@ -26,22 +48,23 @@ function updatePreview(){
 }
 function saveDetails(){
  // Save regular profile fields on this device only. Aadhaar is deliberately not persisted.
- const data={}; ids.filter(id=>id!=="aadhaar").forEach(id=>{data[id]=$(id).value});
+ const data={}; ids.filter(id=>id!=="aadhaar").forEach(id=>{data[id]=$(id).value});data.extraLand=Array.from(document.querySelectorAll(".extra-land-row")).map(r=>({survey:r.querySelector(".extra-survey").value,area:r.querySelector(".extra-area").value}));
  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));return true}catch(e){return false}
 }
 function restoreDetails(){
- try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return;const data=JSON.parse(raw);ids.filter(id=>id!=="aadhaar").forEach(id=>{if(typeof data[id]==="string")$(id).value=data[id]});}catch(e){}
+ try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return;const data=JSON.parse(raw);ids.filter(id=>id!=="aadhaar").forEach(id=>{if(typeof data[id]==="string")$(id).value=data[id]});if(Array.isArray(data.extraLand))renderExtraLandRows(data.extraLand);}catch(e){}
 }
 restoreDetails();
 ids.forEach(id=>$(id).addEventListener("input",()=>{updatePreview();saveDetails()}));
 $("gender").addEventListener("change",updatePreview);
+$("addLandRow").addEventListener("click",()=>{const current=Array.from(document.querySelectorAll(".extra-land-row")).map(r=>({survey:r.querySelector(".extra-survey").value,area:r.querySelector(".extra-area").value}));current.push({survey:"",area:""});renderExtraLandRows(current);updatePreview();saveDetails()});
 $("photo").addEventListener("change",e=>{
  const file=e.target.files && e.target.files[0]; if(!file){photoData="";$("photoPreview").textContent="किसान\nफोटो";return}
  if(file.size>5*1024*1024){$("status").textContent="फोटो 5 MB से छोटी चुनें।";e.target.value="";return}
  const reader=new FileReader();reader.onload=()=>{photoData=reader.result;$("photoPreview").innerHTML="";const img=document.createElement("img");img.src=photoData;img.alt="Farmer photo";$("photoPreview").appendChild(img)};reader.readAsDataURL(file);
 });
 $("cardForm").addEventListener("submit",e=>{e.preventDefault();updatePreview();$("status").textContent="Preview अपडेट हो गया। जानकारी सही होने की पुष्टि करें।"});
-$("cardForm").addEventListener("reset",()=>setTimeout(()=>{photoData="";$("photoPreview").textContent="किसान\nफोटो";$("status").textContent="";localStorage.removeItem(STORAGE_KEY);updatePreview()},0));
+$("cardForm").addEventListener("reset",()=>setTimeout(()=>{photoData="";$("photoPreview").textContent="किसान\nफोटो";$("status").textContent="";localStorage.removeItem(STORAGE_KEY);renderExtraLandRows([]);updatePreview()},0));
 $("language").addEventListener("change",()=>{
  const t=translations[$("language").value];Object.keys(t).forEach(k=>{if(k==="formTitle")setText(k,t[k]);else{const el=document.querySelector(`[data-i18n="${k}"]`);if(el)el.textContent=t[k]}})
 });
@@ -81,10 +104,11 @@ async function downloadPdf(){
     doc.setFont("helvetica","bold");doc.setFontSize(7);doc.setTextColor(8,123,75);doc.text("FARMER ID",x+w-5,y+54,{align:"right"});
     doc.setFontSize(14);doc.setTextColor(25,45,35);const idLines=doc.splitTextToSize(val("farmerId"),w-68);doc.text(idLines.slice(0,2),x+w-5,y+61,{align:"right"});
    }else{
-    const cols=[["State",val("state")],["District",val("district")],["Sub-district",val("subdistrict")],["Village",val("village")],["Survey No.",val("survey")],["Area",val("area")]];
-    const cw=(w-10)/cols.length;let tx=x+5,ty=y+27;
-    cols.forEach((c,i)=>{doc.setFillColor(237,246,239);doc.rect(tx+i*cw,ty,cw,10,"F");doc.setDrawColor(220,232,224);doc.rect(tx+i*cw,ty,cw,23);doc.setFont("helvetica","bold");doc.setFontSize(6);doc.setTextColor(87,112,98);doc.text(c[0],tx+i*cw+1.5,ty+4);doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(35,58,45);doc.text(doc.splitTextToSize(c[1],cw-3),tx+i*cw+1.5,ty+15)});
-    doc.setFontSize(8);doc.setTextColor(100,118,107);doc.text("Location / land details are based on user-entered information.",x+5,y+62);
+    const cols=[["State",val("state")],["District",val("district")],["Sub-district",val("subdistrict")],["Village",val("village")],["Survey No.",""],["Area","" ]];
+    const cw=(w-10)/cols.length,tx=x+5,ty=y+24;
+    cols.forEach((c,i)=>{doc.setFillColor(237,246,239);doc.rect(tx+i*cw,ty,cw,8,"F");doc.setDrawColor(220,232,224);doc.rect(tx+i*cw,ty,cw,8);doc.setFont("helvetica","bold");doc.setFontSize(5.5);doc.setTextColor(87,112,98);doc.text(c[0],tx+i*cw+1,ty+5);if(i<4){doc.setFont("helvetica","normal");doc.setFontSize(6);doc.setTextColor(35,58,45);doc.text(doc.splitTextToSize(c[1],cw-2).slice(0,2),tx+i*cw+1,ty+13)}});
+    const lands=getLandRows().slice(0,4);let ry=ty+8;lands.forEach((land,i)=>{doc.setDrawColor(220,232,224);doc.rect(tx+4*cw,ry,cw,8);doc.rect(tx+5*cw,ry,cw,8);doc.setFont("helvetica","normal");doc.setFontSize(6.5);doc.setTextColor(35,58,45);doc.text(doc.splitTextToSize(land.survey,cw-2).slice(0,1),tx+4*cw+1,ry+5);doc.text(doc.splitTextToSize(land.area,cw-2).slice(0,1),tx+5*cw+1,ry+5);ry+=8;});
+    doc.setFontSize(7);doc.setTextColor(100,118,107);doc.text("Land details are user-entered personal records.",x+5,y+62);
    }
    doc.setFillColor(11,141,86);doc.rect(x+0.5,y+h-8,w-1,7.5,"F");doc.setFont("helvetica","normal");doc.setFontSize(6);doc.setTextColor(255,255,255);doc.text("PERSONAL RECORD ONLY - NOT A GOVERNMENT-ISSUED CARD",x+4,y+h-3.2);doc.setFont("helvetica","bold");doc.text("Agri Card Studio",x+w-4,y+h-3.2,{align:"right"});
   }

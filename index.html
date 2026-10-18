@@ -35,8 +35,11 @@
         <label><span data-i18n="district">जिला</span><input id="district" placeholder="जिला"></label>
         <label><span data-i18n="subdistrict">तहसील / उप-जिला</span><input id="subdistrict" placeholder="तहसील"></label>
         <label><span data-i18n="village">गाँव</span><input id="village" placeholder="गाँव"></label>
+        <div class="land-help">दूसरे कार्ड पर एक से अधिक खेत/प्लॉट जोड़ सकते हैं।</div>
         <label><span data-i18n="survey">सर्वे / खसरा नंबर (वैकल्पिक)</span><input id="survey" placeholder="रिकॉर्ड के अनुसार"></label>
         <label><span data-i18n="area">क्षेत्रफल (वैकल्पिक)</span><input id="area" placeholder="जैसे 0.50 ha"></label>
+        <div id="extraLandRows" class="extra-land-rows"></div>
+        <button type="button" id="addLandRow" class="secondary add-land-button">＋ दूसरा खेत / प्लॉट जोड़ें</button>
       </div>
       <label class="upload-label"><span data-i18n="photo">फोटो (वैकल्पिक)</span><input id="photo" type="file" accept="image/png,image/jpeg,image/webp"></label>
       <div class="actions"><button type="submit" class="primary">Preview अपडेट करें</button><button type="button" id="downloadPdf" class="download">जानकारी सेव करें और PDF डाउनलोड करें</button><button type="reset" class="secondary">फॉर्म साफ़ करें</button></div>
@@ -68,7 +71,7 @@
       </article>
       <article class="farmer-card back-card" id="backCard">
         <div class="official-inspired-head"><div class="brand-block"><div class="seal-mark">✦</div><div><strong>MAHARASHTRA</strong><small>FARMER INFORMATION</small></div></div><div class="main-card-title"><strong>FARMER ID CARD</strong><small>Agri Card Studio · Personal Record</small></div><div class="agri-wordmark">Agri<span>Stack</span><small>PERSONAL RECORD</small></div></div><div class="registry-strip">FARMER DETAILS <span>PERSONAL USE</span></div>
-        <div class="table-scroll"><table><thead><tr><th>State</th><th>District</th><th>Sub-Dist.</th><th>Village</th><th>Survey No.</th><th>Area</th></tr></thead><tbody><tr><td id="pState">—</td><td id="pDistrict">—</td><td id="pSubdistrict">—</td><td id="pVillage">—</td><td id="pSurvey">—</td><td id="pArea">—</td></tr></tbody></table></div>
+        <div class="table-scroll"><table><thead><tr><th>State</th><th>District</th><th>Sub-Dist.</th><th>Village</th><th>Survey No.</th><th>Area</th></tr></thead><tbody id="landTableBody"><tr><td id="pState">—</td><td id="pDistrict">—</td><td id="pSubdistrict">—</td><td id="pVillage">—</td><td id="pSurvey">—</td><td id="pArea">—</td></tr></tbody></table></div>
         <div class="back-note">स्थान / भूमि विवरण किसान द्वारा भरे गए डेटा पर आधारित हैं।</div>
         <div class="card-footer"><span>FARMER DETAILS • व्यक्तिगत उपयोग</span><b>AGRI CARD STUDIO</b></div>
       </article>
