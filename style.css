@@ -22,3 +22,5 @@
 @media(max-width:1050px){.main-card-title strong{font-size:16px}.brand-block strong{font-size:8px}.brand-block small,.agri-wordmark small{font-size:6px}.agri-wordmark{font-size:14px}}
 @media(max-width:600px){.official-inspired-head{grid-template-columns:.9fr 1.5fr .8fr;gap:4px}.main-card-title strong{font-size:14px}.main-card-title small{font-size:8px}.brand-block strong{font-size:7px}.brand-block small{font-size:5px}.seal-mark{width:23px;height:23px;font-size:15px}.agri-wordmark{font-size:12px}.registry-strip{font-size:9px}.registry-strip span{font-size:6px}}
 \n.field-hint{display:block;font-size:.78rem;color:#617568;margin-top:4px}.sample-watermark{display:none!important}\n
+/* Prominent Farmer ID, similar in visual hierarchy to a large identification number. */
+.farmer-id-emphasis{margin-top:5px;padding:4px 7px;border:1px solid #c8dfd0;border-radius:5px;background:#f1f8f3;display:flex;flex-direction:column;gap:2px;max-width:220px}.farmer-id-emphasis b{font-size:8px;letter-spacing:1px;color:#187b4d}.farmer-id-emphasis strong{font-size:clamp(15px,1.8vw,24px);font-weight:900;letter-spacing:.5px;color:#172a24;overflow-wrap:anywhere;line-height:1.1}

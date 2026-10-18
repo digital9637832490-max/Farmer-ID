@@ -65,19 +65,21 @@ async function downloadPdf(){
   const pageW=297,pageH=210,margin=8,gap=5,cardW=(pageW-margin*2-gap)/2,cardH=85,y=(pageH-cardH)/2;
   async function drawCard(x,y,w,h,back){
    doc.setFillColor(255,255,255);doc.setDrawColor(143,185,160);doc.setLineWidth(.5);roundedRect(doc,x,y,w,h,4,"FD");
-   doc.setFont("helvetica","bold");doc.setFontSize(13);doc.setTextColor(8,123,75);doc.text("Agri",x+5,y+10);doc.setTextColor(220,180,45);doc.text("Card",x+16,y+10);
-   doc.setFontSize(12);doc.setTextColor(185,156,49);doc.text("MERA KISAN CARD",x+w-5,y+10,{align:"right"});
+   doc.setFont("helvetica","bold");doc.setFontSize(13);doc.setTextColor(8,123,75);doc.text("Agri",x+5,y+10);doc.setTextColor(220,180,45);doc.text("Stack",x+16,y+10);
+   doc.setFontSize(12);doc.setTextColor(185,156,49);doc.text("FARMER ID CARD",x+w-5,y+10,{align:"right"});
    doc.setDrawColor(226,236,230);doc.line(x+4,y+14,x+w-4,y+14);
    if(!back){
     let px=x+5,py=y+19,pw=24,ph=36;doc.setFillColor(238,245,240);doc.setDrawColor(210,225,216);doc.rect(px,py,pw,ph,"FD");
     if(photoData){try{const img=await loadImage(photoData);const fmt=photoData.includes("image/png")?"PNG":"JPEG";doc.addImage(img,fmt,px+0.5,py+0.5,pw-1,ph-1)}catch(e){}}
     doc.setTextColor(34,55,44);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text(doc.splitTextToSize(val("name"),w-68),x+33,y+22);
     doc.setFont("helvetica","normal");doc.setFontSize(8);
-    const lines=[["Father / Spouse",val("father")],["DOB",formatDate($("dob").value)],["Gender",$("gender").value],["Mobile",val("mobile")],["Aadhaar",aadhaarDigits.length===12?"XXXX-XXXX-"+aadhaarDigits.slice(-4):"—"],["Farmer ID",val("farmerId")]];
+    const lines=[["Father / Spouse",val("father")],["DOB",formatDate($("dob").value)],["Gender",$("gender").value],["Mobile",val("mobile")],["Aadhaar",aadhaarDigits.length===12?"XXXX-XXXX-"+aadhaarDigits.slice(-4):"—"]];
     let ly=y+31;for(const [k,v] of lines){doc.setTextColor(93,116,103);doc.text(k+":",x+33,ly);doc.setTextColor(35,58,45);doc.text(doc.splitTextToSize(v,w-75),x+56,ly);ly+=8}
     // QR code explicitly contains user-entered text, not a government verification token.
     const qrCanvas=$("qrCode").querySelector("canvas");if(qrCanvas){doc.addImage(qrCanvas.toDataURL("image/png"),"PNG",x+w-27,y+21,21,21)}
     doc.setFontSize(6);doc.setTextColor(90,105,96);doc.text("DATA QR - NOT OFFICIAL VERIFICATION",x+w-5,y+45,{align:"right"});
+    doc.setFont("helvetica","bold");doc.setFontSize(7);doc.setTextColor(8,123,75);doc.text("FARMER ID",x+w-5,y+54,{align:"right"});
+    doc.setFontSize(14);doc.setTextColor(25,45,35);const idLines=doc.splitTextToSize(val("farmerId"),w-68);doc.text(idLines.slice(0,2),x+w-5,y+61,{align:"right"});
    }else{
     const cols=[["State",val("state")],["District",val("district")],["Sub-district",val("subdistrict")],["Village",val("village")],["Survey No.",val("survey")],["Area",val("area")]];
     const cw=(w-10)/cols.length;let tx=x+5,ty=y+27;
