@@ -1,10 +1,10 @@
 const $ = id => document.getElementById(id);
-const ids = ["name","father","dob","gender","mobile","farmerId","state","district","subdistrict","village","survey","area"];
+const ids = ["name","father","dob","gender","mobile","aadhaar","farmerId","state","district","subdistrict","village","survey","area"];
 let photoData = "";
 const translations = {
- hi:{formTitle:"किसान की जानकारी",name:"किसान का पूरा नाम",father:"पिता / पति का नाम",dob:"जन्मतिथि",gender:"लिंग",mobile:"मोबाइल नंबर (वैकल्पिक)",farmerId:"Farmer ID (आधिकारिक रिकॉर्ड से)",state:"राज्य",district:"जिला",subdistrict:"तहसील / उप-जिला",village:"गाँव",survey:"सर्वे / खसरा नंबर (वैकल्पिक)",area:"क्षेत्रफल (वैकल्पिक)",photo:"फोटो (वैकल्पिक)"},
- mr:{formTitle:"शेतकऱ्याची माहिती",name:"शेतकऱ्याचे पूर्ण नाव",father:"वडील / पतीचे नाव",dob:"जन्मतारीख",gender:"लिंग",mobile:"मोबाइल नंबर (पर्यायी)",farmerId:"Farmer ID (अधिकृत नोंदीनुसार)",state:"राज्य",district:"जिल्हा",subdistrict:"तालुका / उपजिल्हा",village:"गाव",survey:"सर्वे / गट क्रमांक (पर्यायी)",area:"क्षेत्रफळ (पर्यायी)",photo:"फोटो (पर्यायी)"},
- en:{formTitle:"Farmer details",name:"Farmer full name",father:"Father / spouse name",dob:"Date of birth",gender:"Gender",mobile:"Mobile number (optional)",farmerId:"Farmer ID (from official record)",state:"State",district:"District",subdistrict:"Sub-district / Taluka",village:"Village",survey:"Survey / plot number (optional)",area:"Land area (optional)",photo:"Photo (optional)"}
+ hi:{formTitle:"किसान की जानकारी",name:"किसान का पूरा नाम",father:"पिता / पति का नाम",dob:"जन्मतिथि",gender:"लिंग",mobile:"मोबाइल नंबर (वैकल्पिक)",aadhaar:"आधार नंबर (वैकल्पिक)",farmerId:"Farmer ID (आधिकारिक रिकॉर्ड से)",state:"राज्य",district:"जिला",subdistrict:"तहसील / उप-जिला",village:"गाँव",survey:"सर्वे / खसरा नंबर (वैकल्पिक)",area:"क्षेत्रफल (वैकल्पिक)",photo:"फोटो (वैकल्पिक)"},
+ mr:{formTitle:"शेतकऱ्याची माहिती",name:"शेतकऱ्याचे पूर्ण नाव",father:"वडील / पतीचे नाव",dob:"जन्मतारीख",gender:"लिंग",mobile:"मोबाइल नंबर (पर्यायी)",aadhaar:"आधार क्रमांक (पर्यायी)",farmerId:"Farmer ID (अधिकृत नोंदीनुसार)",state:"राज्य",district:"जिल्हा",subdistrict:"तालुका / उपजिल्हा",village:"गाव",survey:"सर्वे / गट क्रमांक (पर्यायी)",area:"क्षेत्रफळ (पर्यायी)",photo:"फोटो (पर्यायी)"},
+ en:{formTitle:"Farmer details",name:"Farmer full name",father:"Father / spouse name",dob:"Date of birth",gender:"Gender",mobile:"Mobile number (optional)",aadhaar:"Aadhaar number (optional)",farmerId:"Farmer ID (from official record)",state:"State",district:"District",subdistrict:"Sub-district / Taluka",village:"Village",survey:"Survey / plot number (optional)",area:"Land area (optional)",photo:"Photo (optional)"}
 };
 function val(id){return $(id).value.trim() || "—"}
 function setText(id,text){$(id).textContent=text}
@@ -15,9 +15,11 @@ function updatePreview(){
  setText("pFather",val("father"));setText("pDob",formatDate($("dob").value));
  const genderMap={Female:"महिला",Male:"पुरुष",Other:"अन्य"};
  setText("pGender",genderMap[$("gender").value]||val("gender"));setText("pMobile",val("mobile"));setText("pId",val("farmerId"));
+ const a=$("aadhaar").value.replace(/\\D/g,"");
+ setText("pAadhaar",a.length===12?"XXXX-XXXX-"+a.slice(-4):"—");
  setText("pState",val("state"));setText("pDistrict",val("district"));setText("pSubdistrict",val("subdistrict"));setText("pVillage",val("village"));setText("pSurvey",val("survey"));setText("pArea",val("area"));
  const q=$("qrCode");q.innerHTML="";
- const qrText="USER-ENTERED DATA ONLY | Farmer ID: "+val("farmerId")+" | Name: "+val("name");
+ const qrText="PERSONAL RECORD | Farmer ID: "+val("farmerId")+" | Name: "+val("name");
  if(window.QRCode && val("farmerId")!=="—") new QRCode(q,{text:qrText,width:100,height:100,colorDark:"#172a24",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
  else q.textContent="ID भरें";
 }
@@ -28,7 +30,7 @@ $("photo").addEventListener("change",e=>{
  if(file.size>5*1024*1024){$("status").textContent="फोटो 5 MB से छोटी चुनें।";e.target.value="";return}
  const reader=new FileReader();reader.onload=()=>{photoData=reader.result;$("photoPreview").innerHTML="";const img=document.createElement("img");img.src=photoData;img.alt="Farmer photo";$("photoPreview").appendChild(img)};reader.readAsDataURL(file);
 });
-$("cardForm").addEventListener("submit",async e=>{e.preventDefault();updatePreview();await downloadPdf()});
+$("cardForm").addEventListener("submit",e=>{e.preventDefault();updatePreview();$("status").textContent="Preview अपडेट हो गया। जानकारी सही होने की पुष्टि करें।"});
 $("cardForm").addEventListener("reset",()=>setTimeout(()=>{photoData="";$("photoPreview").textContent="किसान\nफोटो";$("status").textContent="";updatePreview()},0));
 $("language").addEventListener("change",()=>{
  const t=translations[$("language").value];Object.keys(t).forEach(k=>{if(k==="formTitle")setText(k,t[k]);else{const el=document.querySelector(`[data-i18n="${k}"]`);if(el)el.textContent=t[k]}})
@@ -38,7 +40,9 @@ function roundedRect(doc,x,y,w,h,r,style){doc.roundedRect(x,y,w,h,r,r,style)}
 async function downloadPdf(){
  const status=$("status");
  if(!window.jspdf || !window.jspdf.jsPDF){status.textContent="PDF लाइब्रेरी लोड नहीं हुई। इंटरनेट चालू करके पेज रीफ्रेश करें।";return}
- if(val("name")==="—"||val("farmerId")==="—"){status.textContent="PDF से पहले किसान का नाम और आधिकारिक Farmer ID भरें।";return}
+ if(val("name")==="—"||val("farmerId")==="—"){status.textContent="PDF से पहले किसान का नाम और Farmer ID भरें।";return}
+ const aadhaarDigits=$("aadhaar").value.replace(/\\D/g,"");
+ if(aadhaarDigits && !/^\\d{12}$/.test(aadhaarDigits)){status.textContent="आधार नंबर वैकल्पिक है, लेकिन भरने पर 12 अंक होने चाहिए।";return}
  status.textContent="PDF तैयार हो रहा है…";
  try{
   const {jsPDF}=window.jspdf;const doc=new jsPDF({orientation:"landscape",unit:"mm",format:"a4",compress:true});
@@ -53,7 +57,7 @@ async function downloadPdf(){
     if(photoData){try{const img=await loadImage(photoData);const fmt=photoData.includes("image/png")?"PNG":"JPEG";doc.addImage(img,fmt,px+0.5,py+0.5,pw-1,ph-1)}catch(e){}}
     doc.setTextColor(34,55,44);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text(doc.splitTextToSize(val("name"),w-68),x+33,y+22);
     doc.setFont("helvetica","normal");doc.setFontSize(8);
-    const lines=[["Father / Spouse",val("father")],["DOB",formatDate($("dob").value)],["Gender",$("gender").value],["Mobile",val("mobile")],["Farmer ID",val("farmerId")]];
+    const lines=[["Father / Spouse",val("father")],["DOB",formatDate($("dob").value)],["Gender",$("gender").value],["Mobile",val("mobile")],["Aadhaar",aadhaarDigits.length===12?"XXXX-XXXX-"+aadhaarDigits.slice(-4):"—"],["Farmer ID",val("farmerId")]];
     let ly=y+31;for(const [k,v] of lines){doc.setTextColor(93,116,103);doc.text(k+":",x+33,ly);doc.setTextColor(35,58,45);doc.text(doc.splitTextToSize(v,w-75),x+56,ly);ly+=8}
     // QR code explicitly contains user-entered text, not a government verification token.
     const qrCanvas=$("qrCode").querySelector("canvas");if(qrCanvas){doc.addImage(qrCanvas.toDataURL("image/png"),"PNG",x+w-27,y+21,21,21)}
@@ -68,7 +72,7 @@ async function downloadPdf(){
   }
   await drawCard(margin,y,cardW,cardH,false);await drawCard(margin+cardW+gap,y,cardW,cardH,true);
   doc.setFont("helvetica","normal");doc.setFontSize(6);doc.setTextColor(110,120,114);doc.text("Generated from user-provided data. This PDF is not an official Farmer ID or proof of government verification.",pageW/2,pageH-6,{align:"center"});
-  doc.save("farmer-card-demo.pdf");status.textContent="PDF डाउनलोड हो गया। यह व्यक्तिगत रिकॉर्ड के लिए है, सरकारी कार्ड नहीं।";
+  doc.save("farmer-profile-card.pdf");status.textContent="PDF डाउनलोड हो गया। यह व्यक्तिगत रिकॉर्ड है, सरकारी पहचान-पत्र नहीं।";
  }catch(err){status.textContent="PDF नहीं बन पाया। कृपया दोबारा प्रयास करें।"}
 }
 $("downloadPdf").addEventListener("click",downloadPdf);

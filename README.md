@@ -30,3 +30,4 @@ This project does **not** issue, verify, or reproduce an official government Far
 - PDF and QR libraries are loaded from CDNs, so internet access is needed for those features.
 - User data is processed in the browser and is not sent to a backend by this project.
 - This is a demo and does not connect to any government Farmer Registry API.
+\n\nAadhaar privacy: Aadhaar is optional, validated as 12 digits when entered, masked to its last four digits in the preview/PDF, and excluded from the QR code. All form processing happens in the browser. This is a personal farmer profile card, not a government-issued identity document.\n
