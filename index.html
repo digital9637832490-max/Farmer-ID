@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Farmer Card PDF maker for farmer-provided or officially obtained information.">
+  <title>Agri Card Studio | Farmer Card PDF</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand-mark">Agri<span>✓</span>Card</div>
+  <div class="top-copy"><strong>Farmer Card Studio</strong><small>Card preview • A4 PDF download</small></div>
+  <select id="language" aria-label="Language">
+    <option value="hi">हिंदी</option><option value="mr">मराठी</option><option value="en">English</option>
+  </select>
+</header>
+
+<main class="layout">
+  <section class="panel form-panel">
+    <div class="section-heading"><div><p class="eyebrow">CARD DETAILS</p><h1 id="formTitle">किसान की जानकारी</h1></div><span class="pill">A4 • 2 Cards</span></div>
+    <div class="notice"><strong>महत्वपूर्ण:</strong> केवल किसान की अनुमति से और आधिकारिक स्रोत से मिली सही जानकारी भरें। यह वेबसाइट स्वयं सरकारी Farmer ID जारी या सत्यापित नहीं करती।</div>
+    <form id="cardForm">
+      <div class="field-grid">
+        <label><span data-i18n="name">किसान का पूरा नाम</span><input id="name" required maxlength="70" placeholder="उदाहरण: किसान का नाम"></label>
+        <label><span data-i18n="father">पिता / पति का नाम</span><input id="father" maxlength="70" placeholder="नाम"></label>
+        <label><span data-i18n="dob">जन्मतिथि</span><input id="dob" type="date"></label>
+        <label><span data-i18n="gender">लिंग</span><select id="gender"><option value="Female">महिला</option><option value="Male">पुरुष</option><option value="Other">अन्य</option></select></label>
+        <label><span data-i18n="mobile">मोबाइल नंबर (वैकल्पिक)</span><input id="mobile" inputmode="numeric" maxlength="10" placeholder="10 अंकों का नंबर"></label>
+        <label><span data-i18n="farmerId">Farmer ID (आधिकारिक रिकॉर्ड से)</span><input id="farmerId" required maxlength="30" placeholder="असली Farmer ID"></label>
+        <label><span data-i18n="state">राज्य</span><input id="state" value="Maharashtra"></label>
+        <label><span data-i18n="district">जिला</span><input id="district" placeholder="जिला"></label>
+        <label><span data-i18n="subdistrict">तहसील / उप-जिला</span><input id="subdistrict" placeholder="तहसील"></label>
+        <label><span data-i18n="village">गाँव</span><input id="village" placeholder="गाँव"></label>
+        <label><span data-i18n="survey">सर्वे / खसरा नंबर (वैकल्पिक)</span><input id="survey" placeholder="रिकॉर्ड के अनुसार"></label>
+        <label><span data-i18n="area">क्षेत्रफल (वैकल्पिक)</span><input id="area" placeholder="जैसे 0.50 ha"></label>
+      </div>
+      <label class="upload-label"><span data-i18n="photo">फोटो (वैकल्पिक)</span><input id="photo" type="file" accept="image/png,image/jpeg,image/webp"></label>
+      <div class="actions"><button type="submit" class="primary">Preview अपडेट करें</button><button type="button" id="downloadPdf" class="download">A4 PDF डाउनलोड करें</button><button type="reset" class="secondary">फॉर्म साफ़ करें</button></div>
+      <p class="hint">PDF बनाने के लिए इंटरनेट कनेक्शन आवश्यक है (PDF और QR लाइब्रेरी CDN से लोड होती हैं)। डेटा इस पेज पर ही प्रोसेस होता है; सर्वर पर अपलोड नहीं किया जाता।</p>
+      <p id="status" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <section class="panel preview-panel">
+    <div class="section-heading"><div><p class="eyebrow">LIVE PREVIEW</p><h2>दो कार्ड — एक A4 पेज</h2></div><span class="live-dot">LIVE</span></div>
+    <div class="cards-wrap">
+      <article class="farmer-card" id="frontCard">
+        <div class="card-head"><div class="mini-logo">Agri<span>✓</span>Card</div><div class="hindi-title">मेरा किसान कार्ड</div></div>
+        <div class="front-content">
+          <div class="photo-box" id="photoPreview">किसान<br>फोटो</div>
+          <div class="details">
+            <strong id="pName">किसान का नाम</strong>
+            <span id="pNameHindi">किसान का नाम</span>
+            <p><b>पिता / पति:</b> <span id="pFather">—</span></p>
+            <p><b>जन्मतिथि:</b> <span id="pDob">—</span></p>
+            <p><b>लिंग:</b> <span id="pGender">महिला</span></p>
+            <p><b>मोबाइल:</b> <span id="pMobile">—</span></p>
+            <p><b>Farmer ID:</b> <span id="pId">—</span></p>
+          </div>
+          <div class="qr-box"><div id="qrCode"></div><small>डेटा QR*</small></div>
+        </div>
+        <div class="card-footer"><span>व्यक्तिगत रिकॉर्ड हेतु • आधिकारिक प्रमाणपत्र नहीं</span><b>Agri Card</b></div>
+      </article>
+      <article class="farmer-card back-card" id="backCard">
+        <div class="card-head"><div class="mini-logo">Agri<span>✓</span>Card</div><div class="hindi-title">मेरा किसान कार्ड</div></div>
+        <div class="table-scroll"><table><thead><tr><th>State</th><th>District</th><th>Sub-Dist.</th><th>Village</th><th>Survey No.</th><th>Area</th></tr></thead><tbody><tr><td id="pState">—</td><td id="pDistrict">—</td><td id="pSubdistrict">—</td><td id="pVillage">—</td><td id="pSurvey">—</td><td id="pArea">—</td></tr></tbody></table></div>
+        <div class="back-note">स्थान / भूमि विवरण किसान द्वारा भरे गए डेटा पर आधारित हैं।</div>
+        <div class="card-footer"><span>यह सरकारी रूप से जारी कार्ड नहीं है।</span><b>Agri Card</b></div>
+      </article>
+    </div>
+    <div class="preview-note"><b>*QR जानकारी:</b> यह QR केवल इस फॉर्म में भरी ID और नाम का टेक्स्ट रखता है। यह सरकारी QR नहीं है और आधिकारिक सत्यापन नहीं करता।</div>
+  </section>
+</main>
+<footer>Agri Card Studio · GitHub Pages ready · Use only authorized and accurate information</footer>
+<div id="qrScratch" aria-hidden="true"></div>
+<script src="app.js"></script>
+</body>
+</html>
