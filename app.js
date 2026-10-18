@@ -34,11 +34,10 @@ function updateLandTable(){
 }
 function updatePreview(){
  setText("pName",val("name")==="—"?"किसान का नाम":val("name"));
- setText("pIdBack",val("farmerId"));
  setText("pNameHindi",val("name")==="—"?"किसान का नाम":val("name"));
  setText("pFather",val("father"));setText("pDob",formatDate($("dob").value));
  const genderMap={Female:"महिला",Male:"पुरुष",Other:"अन्य"};
- setText("pGender",genderMap[$("gender").value]||val("gender"));setText("pMobile",val("mobile"));setText("pId",val("farmerId"));
+ setText("pGender",genderMap[$("gender").value]||val("gender"));setText("pMobile",val("mobile"));setText("pId",val("farmerId"));setText("pIdBack",val("farmerId"));
  const a=$("aadhaar").value.replace(/\D/g,"");
  setText("pAadhaar",a.length===12?a:"—");
  setText("pState",val("state"));setText("pDistrict",val("district"));setText("pSubdistrict",val("subdistrict"));setText("pVillage",val("village"));setText("pSurvey",val("survey"));setText("pArea",val("area"));updateLandTable();
@@ -101,14 +100,13 @@ async function downloadPdf(){
     let ly=y+29;for(const [k,v] of lines){doc.setTextColor(93,116,103);doc.text(k+":",x+33,ly);doc.setTextColor(35,58,45);doc.text(doc.splitTextToSize(v,w-75),x+56,ly);ly+=5.2}
     // QR code explicitly contains user-entered text, not a government verification token.
     const qrCanvas=$("qrCode").querySelector("canvas");if(qrCanvas){doc.addImage(qrCanvas.toDataURL("image/png"),"PNG",x+w-27,y+21,21,21)}
-    
     doc.setFont("helvetica","bold");doc.setFontSize(7);doc.setTextColor(8,123,75);doc.text("FARMER ID",x+w/2,y+58,{align:"center"});
     doc.setFontSize(14);doc.setTextColor(25,45,35);const idLines=doc.splitTextToSize(val("farmerId"),w-20);doc.text(idLines.slice(0,2),x+w/2,y+66,{align:"center"});
    }else{
-    doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(8,92,45);doc.text("FARMER ID - "+val("farmerId"),x+w/2,y+20,{align:"center"});
-    try{const art=await loadImage("farmer-oxen.png");doc.addImage(art,"PNG",x+w-42,y+46,36,12)}catch(e){}
+    doc.setFont("helvetica","bold");doc.setFontSize(7);doc.setTextColor(8,123,75);doc.text("FARMER ID",x+w/2,y+58,{align:"center"});
+    doc.setFontSize(14);doc.setTextColor(25,45,35);const backIdLines=doc.splitTextToSize(val("farmerId"),w-20);doc.text(backIdLines.slice(0,2),x+w/2,y+66,{align:"center"});
     const cols=[["State",val("state")],["District",val("district")],["Sub-district",val("subdistrict")],["Village",val("village")],["Survey No.",""],["Area","" ]];
-    const cw=(w-10)/cols.length,tx=x+5,ty=y+31;
+    const cw=(w-10)/cols.length,tx=x+5,ty=y+24;
     cols.forEach((c,i)=>{doc.setFillColor(237,246,239);doc.rect(tx+i*cw,ty,cw,8,"F");doc.setDrawColor(220,232,224);doc.rect(tx+i*cw,ty,cw,8);doc.setFont("helvetica","bold");doc.setFontSize(5.5);doc.setTextColor(87,112,98);doc.text(c[0],tx+i*cw+1,ty+5);if(i<4){doc.setFont("helvetica","normal");doc.setFontSize(6);doc.setTextColor(35,58,45);doc.text(doc.splitTextToSize(c[1],cw-2).slice(0,2),tx+i*cw+1,ty+13)}});
     const lands=getLandRows().slice(0,4);let ry=ty+8;lands.forEach((land,i)=>{doc.setDrawColor(220,232,224);doc.rect(tx+4*cw,ry,cw,8);doc.rect(tx+5*cw,ry,cw,8);doc.setFont("helvetica","normal");doc.setFontSize(6.5);doc.setTextColor(35,58,45);doc.text(doc.splitTextToSize(land.survey,cw-2).slice(0,1),tx+4*cw+1,ry+5);doc.text(doc.splitTextToSize(land.area,cw-2).slice(0,1),tx+5*cw+1,ry+5);ry+=8;});
    }

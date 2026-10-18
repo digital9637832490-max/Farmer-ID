@@ -28,9 +28,5 @@
 
 .profile-main{position:relative}
 
-/* Farmer and oxen artwork + prominent ID on both cards */
-.qr-box small{display:none!important}
-.back-id{display:flex;align-items:center;justify-content:center;gap:10px;margin:6px 10px 8px;padding:5px;border:1px solid #d5e7d8;border-radius:8px;background:#f2f8e9;color:#145b31}
-.back-id span{font-size:11px;font-weight:800;letter-spacing:.5px}
-.back-id strong{font-size:20px;font-weight:900;letter-spacing:.5px}
-.farmer-oxen-art{display:block;width:38%;max-height:82px;object-fit:contain;margin:0 8px 4px auto;border-radius:8px}
+.back-id-emphasis{margin:10px auto 0;max-width:70%;}
+.back-card .table-scroll{margin-top:10px;}
